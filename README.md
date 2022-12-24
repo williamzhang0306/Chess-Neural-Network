@@ -14,7 +14,8 @@
       |__|    )___(    )___(    /____\    /____\    /_____\
      (====)  (=====)  (=====)  (======)  (======)  (=======)
      }===={  }====={  }====={  }======{  }======{  }======={
- jgs(______)(_______)(_______)(________)(________)(_________)
+    (______)(_______)(_______)(________)(________)(_________)
+    jgs
 
 Thanks for checking out my chess project repo! 
 
@@ -23,6 +24,7 @@ In this project I trained a feed-forward neural network to generate centi-pawn e
 
 ## How to play against my neural network
 You can play my engine on your local machine by running otb-chess/OTB.py.
+
 You can also use this link https://lichess.org/?user=BillyTheBot#friend . Eventually this will let you create a challenge on Lichess against my chess engine. I'm still working on hosting my engine on Google Cloud.
 
 ## Sources
