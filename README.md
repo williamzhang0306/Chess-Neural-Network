@@ -1,25 +1,7 @@
 # Chess-Neural-Network
-                                                    _:_
-                                                   '-.-'
-                                          ()      __.'.__
-                                       .-:--:-.  |_______|
-                                ()      \____/    \=====/
-                                /\      {====}     )___(
-                     (\=,      //\\      )__(     /_____\
-     __    |'-'-'|  //  .\    (    )    /____\     |   |
-    /  \   |_____| (( \_  \    )__(      |  |      |   |
-    \__/    |===|   ))  `\_)  /____\     |  |      |   |
-   /____\   |   |  (/     \    |  |      |  |      |   |
-    |  |    |   |   | _.-'|    |  |      |  |      |   |
-    |__|    )___(    )___(    /____\    /____\    /_____\
-   (====)  (=====)  (=====)  (======)  (======)  (=======)
-   }===={  }====={  }====={  }======{  }======{  }======={
-  (______)(_______)(_______)(________)(________)(_________)
-  jgs
 
 Thanks for checking out my chess project repo! 
 
-## Summary
 In this project I trained a feed-forward neural network to generate centi-pawn evaluations of chess positions, similar to engines like Stockfish.
 
 ## How to play against my neural network
