@@ -55,7 +55,7 @@ def play_chess():
     params = {
         'chess_board' : chess_board,
         'engine_color' : engine_color,
-        'model_file_name' : "/Users/williamzhang/Documents/College/Neural-Network-Chess/keras-exports/Model_Cloud5_12_20_22",
+        'model_file_name' : "../keras-exports/Model_Cloud5_12_20_22",
         'engine_depth' : engine_depth
     }
 
