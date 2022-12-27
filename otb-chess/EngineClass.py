@@ -3,10 +3,6 @@ from keras import models
 import numpy as np
 import time
 
-
-search_count = 0
-ab_count = 0
-
 class ChessEngine:
 
     def __init__(self, model_file_name:str,chess_board: chess.Board, engine_color: bool):
@@ -82,7 +78,6 @@ class ChessEngine:
         best_eval = evaluations[0] if self.engine_color == chess.BLACK else evaluations[-1]
 
         return eval_to_move[best_eval]
-
 
 class Deep_ChessEngine2(ChessEngine):
 

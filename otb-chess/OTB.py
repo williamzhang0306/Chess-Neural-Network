@@ -1,5 +1,5 @@
 import chess
-from EngineClass import *
+from EngineClasses import SimpleChessEngine
 
 welcome_message = "Welcome to cheses"
 
@@ -24,7 +24,7 @@ def play_human_move(board):
     board.push(move)
 
 def play_engine_move(engine, board):
-    move = engine.get_move()
+    move = engine.get_move(use_ab = True)
     print("Engine plays", move.uci())
     board.push(move)
 
@@ -59,7 +59,8 @@ def play_chess():
         'engine_depth' : engine_depth
     }
 
-    chess_engine = Deep_ChessEngine2(**params)
+    #chess_engine = Deep_ChessEngine2(**params)
+    chess_engine = SimpleChessEngine(chess_board, engine_depth)
 
     # gaeme loop
     current_color = chess.WHITE
