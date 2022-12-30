@@ -6,7 +6,7 @@ import os
 ### read, parition and load data generators
 def main():
 
-    data = pd.read_csv("gs://chess-ai-bucket/keras-job-dir/random_evals.csv")
+    data = pd.read_csv("gs://chess-ai-bucket/keras-job-dir/chessData.csv")
     num_samples = len(data)
 
     partition_index = int( num_samples * 0.8 )
@@ -31,13 +31,19 @@ def main():
     model = models.Sequential()
     model.add(layers.InputLayer( input_shape = (8,8,12)))
     model.add(layers.Flatten())
-    model.add(layers.Dense(2048, activation = 'elu'))
+    model.add(layers.Dense(768, activation = 'elu'))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.2))
-    model.add(layers.Dense(2048,activation= 'elu'))
+    model.add(layers.Dense(768,activation= 'elu'))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.2))
-    model.add(layers.Dense(2048,activation= 'elu'))
+    model.add(layers.Dense(350,activation= 'elu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dropout(0.2))
+    model.add(layers.Dense(175,activation= 'elu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dropout(0.2))
+    model.add(layers.Dense(50,activation= 'elu'))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.2))
     model.add(layers.Dense(1,activation='sigmoid'))
@@ -68,7 +74,7 @@ def main():
     #model.save('Model_Cloud2_12_19_22')
 
     export_path = os.path.join('gs://chess-ai-bucket/keras-job-dir', 'keras_export')
-    model.save(export_path+"/Model_Cloud5_12_20_22")
+    model.save(export_path+"/Model_Cloud7_12_29_22")
     print('Model exported to: {}'.format(export_path))
 
 
