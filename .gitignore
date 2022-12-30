@@ -2,3 +2,6 @@
 data/
 keras-exports/
 misc/
+__pycache__
+gcloud_auth/
+*.pyc
