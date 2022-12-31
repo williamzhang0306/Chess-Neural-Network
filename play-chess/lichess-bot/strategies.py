@@ -2,10 +2,17 @@
 Some example strategies for people who want to create a custom, homemade bot.
 And some handy classes to extend
 """
+import os
+import sys
 from chess.engine import PlayResult
 import random
 from engine_wrapper import EngineWrapper
-from Engines.EngineClasses import *
+
+currentdir = os.path.dirname(os.path.abspath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+
+from EngineClasses import *
 
 class FillerEngine:
     """
@@ -124,5 +131,5 @@ class NegaMaxEngine(MinimalEngine):
 class AiNegaMax(NegaMaxEngine):
     def __init__(self, commands, options, stderr, draw_or_resign, name=None, **popen_args):
         super().__init__(commands, options, stderr, draw_or_resign, name, **popen_args)
-        model_path = "/Users/williamzhang/Documents/College/Neural-Network-Chess/keras-exports/Model_Cloud9_12_29_22"
+        model_path = "../../keras-exports/Model_Cloud9_12_29_22"
         self.engine = AiEngine(model=model_path,board = None, depth = 1)
