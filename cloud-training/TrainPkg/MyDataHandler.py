@@ -13,14 +13,13 @@ def sigmoid(x):
 
 class DataGenerator(keras.utils.Sequence):
 
-    def __init__(self, data_frame: pd.DataFrame, IDs: list, batch_size = 32, x_dim = (8,8,12), y_dim = (15,1), output_type = '15 classes', shuffle = True):
+    def __init__(self, data_frame: pd.DataFrame, IDs: list, batch_size = 32, x_dim = (8,8,12), y_dim = (15,1), shuffle = True):
         
         self.dataframe = data_frame
         self.IDs = IDs
         self.batch_size = batch_size
         self.x_dim = x_dim
         self.y_dim = y_dim
-        self.output_type = output_type
         self.shuffle = shuffle
         self.indexes = None
         self.on_epoch_end()
@@ -71,76 +70,6 @@ class DataGenerator(keras.utils.Sequence):
 
         return image
 
-    def classify_evaluation_15(self, evaluation: str) -> np.array:
-        '''Classifies centipawn evaluation into 15 categories.
-        Returns a one-hot encoded vector'''
-        
-        label = np.zeros(self.y_dim)
-
-        ranges = [ 
-            (-1000,-8.5), (-7.5,-6.5), (-6.5,-5.5), (-5.5,4.5), (-4.5,-3.5),(-2.5,-1.5),(-1.5,1.5), 
-            (1.5,2.5), (2.5,3.5), (3.5,4.5), (4.5,5.5), (5.5,6.5), (6.5,7.5), (7.5,8.5), (8.5,1000)
-        ]
-
-        ### evaluation is inputed as a string, convert to a number
-        # black has checkmate
-        if '#' in evaluation and '-' in evaluation:
-            evaluation = -100
-
-        # white has checkmate
-        elif '#' in evaluation and '+' in evaluation:
-            evaluation = 100
-
-        # regular centipawn evaluation
-        else:
-            try:
-                evaluation = float(evaluation)/100
-            except:
-                # if there is bad label, just set it to zero
-                # this happens rarely (I think) so I'll just ignore it for now :p
-                evaluation = 0
-
-        for index, domain in enumerate(ranges):
-
-            if domain[0] < evaluation < domain[1]:
-                label[index] = 1
-
-        return label
-
-    def classify_evaluation_3(self, evaluation: str):
-        '''classifies evaluation into 3 categores. Draw, white winning, black winning'''
-
-        label = np.zeros(self.y_dim)
-
-        ranges = [ 
-            (-1000,-1.5),(-1.5,1.5), (1.5,1000)
-        ]
-
-        ### evaluation is inputed as a string, convert to a number
-        # black has checkmate
-        if '#' in evaluation and '-' in evaluation:
-            evaluation = -100
-
-        # white has checkmate
-        elif '#' in evaluation and '+' in evaluation:
-            evaluation = 100
-
-        # regular centipawn evaluation
-        else:
-            try:
-                evaluation = float(evaluation)/100
-            except:
-                # if there is bad label, just set it to zero
-                # this happens rarely (I think) so I'll just ignore it for now :p
-                evaluation = 0
-
-        for index, domain in enumerate(ranges):
-
-            if domain[0] < evaluation < domain[1]:
-                label[index] = 1
-
-        return label
-
     def normalize_evaluation(self, evaluation: str):
         '''returns centipawn evaluation normalized between 0 and 1'''
         #label = np.zeros(self.y_dim)
@@ -155,7 +84,7 @@ class DataGenerator(keras.utils.Sequence):
         # regular centipawn evaluation
         else:
             try:
-                evaluation = sigmoid(float(evaluation)/1000)
+                evaluation = sigmoid(float(evaluation)/100)
             except:
                 # if there is bad label, just set it to zero point five
                 # this happens rarely (I think) so I'll just ignore it for now :p
@@ -165,16 +94,10 @@ class DataGenerator(keras.utils.Sequence):
 
         return evaluation
 
-    def generate_data(self, batch_IDs, output_type):
+    def generate_data(self, batch_IDs):
         '''generaets the x and y data for all IDs within a mini batch.
         3 outputs, 'normalized', '3 classes' , '15 classes'
         Make sure y_dim matches output type '''
-        
-        output_func = {
-            'normalized' : self.normalize_evaluation,
-            '3 classes'  : self.classify_evaluation_3,
-            '15 classes' : self.classify_evaluation_15
-        }
 
         # initialize empty outputs
         x = np.empty((self.batch_size, *self.x_dim))
@@ -189,7 +112,7 @@ class DataGenerator(keras.utils.Sequence):
 
             # convert
             image = self.fen_to_image(fen)
-            label = output_func[output_type](evaluation)
+            label = self.normalize_evaluation(evaluation)
 
             # store
             x[i,] = image
@@ -208,22 +131,6 @@ class DataGenerator(keras.utils.Sequence):
         indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
         temporary_list_IDS = [self.IDs[j] for j in indexes]
 
-        x, y = self.generate_data(batch_IDs = temporary_list_IDS, output_type = self.output_type)
+        x, y = self.generate_data(batch_IDs = temporary_list_IDS)
 
         return x,y
-
-# test_fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
-# test_eval = "0"
-# data = pd.read_csv('Data/random_evals.csv')
-# params = {
-#     'IDs' : [0,1,2,3],
-#     'data_frame' : data,
-#     'batch_size' : 128, 
-#     'x_dim' : (8,8,12),
-#     'y_dim' : (1),
-#     'output_type' : 'normalized'
-# }
-# x = DataGenerator(**params)
-
-# print(x.normalize_evaluation(test_eval))
-# #print(x.fen_to_image(test_fen))
