@@ -21,6 +21,7 @@ class ChessClassifier:
         parts = fen_string.split(" ")
         fen_board = parts[0].split('/')
         active_color = parts[1]
+        
         # populate the board image
         for i, row in enumerate(fen_board):
             j = 0
