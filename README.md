@@ -1,13 +1,14 @@
 # Chess-Neural-Network
 
-Thanks for checking out my chess project repo! 
+Thanks for checking out my chess project repoistory! 
 
-In this project I trained a feed-forward neural network to generate centi-pawn evaluations of chess positions, similar to engines like Stockfish.
+In this project I experimented with using neural networks to generate centi-pawn evaluations of chess positions, similar to evaluation functions used in conventional chess engines like Stockfish.
 
-## How to play against my neural network
-You can play my engine on your local machine by running otb-chess/OTB.py.
+I combined the evaluation networks I trained with a negamax search function I wrote last year to create my own chess engine. To see the code for the engine itself checkout play-chess/EngineClasses.py
 
-You can also use this link https://lichess.org/?user=BillyTheBot#friend . Eventually this will let you create a challenge on Lichess against my chess engine. I'm still working on hosting my engine on Google Cloud.
+Some of the files in data/ and keras-exports/ are too large to be hosted on Github, so there are placeholder.txt files instead while I try to find a solution.
+
+If you would like to contact me please send an email to williamzhang@utexas.edu
 
 ## Sources
 Amidi, Afshine, and Shervine Amidi. “A Detailed Example of How to Use Data Generators with Keras.” A Detailed Example of Data Generators with Keras, https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly. 
