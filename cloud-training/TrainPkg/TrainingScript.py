@@ -1,10 +1,13 @@
+# Script used to train and export models. Includes option to train locally or from the cloud.
+# See cloud-training/Instructions.txt to find commands to run this script.
+
 from keras import layers, models, losses, regularizers, initializers, optimizers, callbacks
 from TrainPkg.MyDataHandler import DataGenerator
 import pandas as pd
 import os
 
 
-def main(cloud = True, model_type = 'CNN',model_name = 'Model_local_10_12_31_22'):
+def main(cloud = True, model_type = 'CNN', model_name = 'Model_Cloud12_01_01_23'):
 
     ### read, parition and load data generators
     if cloud:  
@@ -91,9 +94,9 @@ def main(cloud = True, model_type = 'CNN',model_name = 'Model_local_10_12_31_22'
     else:
         export_path = os.path.join('/Users/williamzhang/Documents/College/Neural-Network-Chess/keras-exports')
 
-    model.save(export_path+"/Model_Cloud9_12_29_22")
+    model.save(export_path + model_name)
     print('Model exported to: {}'.format(export_path))
 
 
 if __name__ == "__main__":
-    main(cloud = False, model_type='CNN')
+    main(cloud = True, model_type='MLP')
