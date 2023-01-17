@@ -5,3 +5,6 @@ misc/
 __pycache__
 gcloud_auth/
 *.pyc
+txt.txt
+tensorflow-apple-metal.yml
+tf-metal-arm64.yaml

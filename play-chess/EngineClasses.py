@@ -3,6 +3,7 @@ import math
 import chess
 import numpy as np
 import keras
+import tensorflow as tf
 
 
 def inverse_sigmoid(x):
@@ -17,6 +18,7 @@ class SimpleChessEngine():
     self.board = board
     self.depth = depth
     self.recursive_calls = 0
+    self.evaluation_type = 'Material'
 
   def evaluate(self) -> int:
     '''Evaluates the board's current state. This implementation just counts material.'''
@@ -122,7 +124,9 @@ class AiEngine(SimpleChessEngine):
 
   def __init__(self, model: str, board: chess.Board, depth = 0):
     super().__init__(board, depth)
+    print('HEY', model)
     self.keras_model = keras.models.load_model(model)
+    self.evaluation_type = 'Neural Network Prediction (Keras)'
 
   def fen_to_image(self, fen_string: str) -> np.array:
     '''Converts fen string to 8x8x12 (rows x cols x channels) image. 
@@ -134,7 +138,7 @@ class AiEngine(SimpleChessEngine):
       'P':0, 'N':1, 'B':2, 'R':3 , 'Q':4 , 'K':5,
       'p':6, 'n':7, 'b':8, 'r':9, 'q':10, 'k':11
     }
-    image = np.zeros([8,8,12])
+    image = np.zeros([8,8,12],dtype='float32')
 
     # extract info from the fen string
     parts = fen_string.split(" ")
@@ -173,6 +177,51 @@ class AiEngine(SimpleChessEngine):
     fen = self.board.fen()
     image = self.fen_to_image(fen)
     prediction = self.keras_model.predict(image,verbose = 0)[0][0]
+
+    # model prediction is normalized between [0, 1] using a sigmoid
+    # inverse of sigmoid used to get 'true' evaluation. Though not necessary
+    evaluation = 100 * inverse_sigmoid(prediction)
+
+    # evaluation is relative in negamax impelmentaiton
+    perspective = 1 if self.board.turn == chess.WHITE else -1
+
+    return evaluation * perspective
+
+class TFLiteEngine(AiEngine):
+  'exactly the same as AiEngine, but uses TFLite to speed up predictions'
+
+  def __init__(self, model: str, board: chess.Board, depth=0):
+    super().__init__(model, board, depth)
+    self.evaluation_type = 'Neural Network Prediction (TfLite)'
+
+
+    # converting and initalizing TFLite model
+    converter = tf.lite.TFLiteConverter.from_saved_model(model) # path to the SavedModel directory
+    tflite_model = converter.convert()
+    self.interpreter = tf.lite.Interpreter(model_content = tflite_model)
+    self.interpreter.allocate_tensors()
+    self.input_index = self.interpreter.get_input_details()[0]['index']
+    self.output_index = self.interpreter.get_output_details()[0]['index']
+
+  def evaluate(self) -> float:
+    '''returns a number that corresponds to normalized board evaluation'''
+    # check for checkmates and draws
+    outcome = self.board.outcome()
+    if outcome != None:
+      if outcome.winner == None: return 0
+      if outcome.winner == self.board.turn: return 9000
+      if outcome.winner != self.board.turn: return -9000
+
+    # make prediction
+    fen = self.board.fen()
+    input_data = np.float32(self.fen_to_image(fen))
+
+    input_index = self.interpreter.get_input_details()[0]['index']
+    output_index = self.interpreter.get_output_details()[0]['index']
+
+    self.interpreter.set_tensor(input_index, input_data)
+    self.interpreter.invoke()
+    prediction = self.interpreter.get_tensor(output_index)
 
     # model prediction is normalized between [0, 1] using a sigmoid
     # inverse of sigmoid used to get 'true' evaluation. Though not necessary

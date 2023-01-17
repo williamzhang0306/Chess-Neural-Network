@@ -7,13 +7,13 @@ import pandas as pd
 import os
 
 
-def main(cloud = True, model_type = 'CNN', model_name = 'Model_Cloud12_01_01_23'):
+def main(cloud = False, model_type = 'CNN', model_name = 'test'):
 
     ### read, parition and load data generators
     if cloud:  
-        data = pd.read_csv("gs://chess-ai-bucket/keras-job-dir/chessData.csv")
+        data = pd.read_csv("gs://chess-ai-bucket/keras-job-dir/random_evals.csv")
     else:
-        data = pd.read_csv("/Users/williamzhang/Documents/College/Neural-Network-Chess/data/chessData.csv")
+        data = pd.read_csv("../data/random_evals.csv")
     
     num_samples = len(data)
     partition_index = int( num_samples * 0.8 )
@@ -39,19 +39,16 @@ def main(cloud = True, model_type = 'CNN', model_name = 'Model_Cloud12_01_01_23'
     if model_type == 'MLP':
         model.add(layers.InputLayer( input_shape = (8,8,12)))
         model.add(layers.Flatten())
-        model.add(layers.Dense(768, activation = 'elu'))
+        model.add(layers.Dense(768, activation = 'relu'))
         model.add(layers.BatchNormalization())
         model.add(layers.Dropout(0.2))
-        model.add(layers.Dense(768,activation= 'elu'))
+        model.add(layers.Dense(350,activation= 'relu'))
         model.add(layers.BatchNormalization())
         model.add(layers.Dropout(0.2))
-        model.add(layers.Dense(350,activation= 'elu'))
+        model.add(layers.Dense(175,activation= 'relu'))
         model.add(layers.BatchNormalization())
         model.add(layers.Dropout(0.2))
-        model.add(layers.Dense(175,activation= 'elu'))
-        model.add(layers.BatchNormalization())
-        model.add(layers.Dropout(0.2))
-        model.add(layers.Dense(50,activation= 'elu'))
+        model.add(layers.Dense(50,activation= 'relu'))
         model.add(layers.BatchNormalization())
         model.add(layers.Dropout(0.2))
         model.add(layers.Dense(1,activation='sigmoid'))
@@ -83,9 +80,9 @@ def main(cloud = True, model_type = 'CNN', model_name = 'Model_Cloud12_01_01_23'
     history = model.fit(training_data, 
                         epochs=200, 
                         validation_data=(testing_data), 
-                        workers = 6,
-                        use_multiprocessing=True,
-                        max_queue_size = 100,
+                        #workers = 6,
+                        #use_multiprocessing=True,
+                        #max_queue_size = 100,
                         callbacks= [es],
                         verbose = 2)
 
@@ -99,4 +96,4 @@ def main(cloud = True, model_type = 'CNN', model_name = 'Model_Cloud12_01_01_23'
 
 
 if __name__ == "__main__":
-    main(cloud = True, model_type='MLP')
+    main(cloud = False, model_type='MLP')

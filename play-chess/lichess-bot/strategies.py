@@ -131,5 +131,5 @@ class NegaMaxEngine(MinimalEngine):
 class AiNegaMax(NegaMaxEngine):
     def __init__(self, commands, options, stderr, draw_or_resign, name=None, **popen_args):
         super().__init__(commands, options, stderr, draw_or_resign, name, **popen_args)
-        model_path = "../../keras-exports/Model_Cloud9_12_29_22"
-        self.engine = AiEngine(model=model_path,board = None, depth = 1)
+        model_path = "../../keras-exports/Model_Cloud13_01_01_23"
+        self.engine = TFLiteEngine(model=model_path,board = None, depth = 3)
